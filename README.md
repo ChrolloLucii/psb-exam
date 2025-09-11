@@ -13,7 +13,11 @@ sudo crontab -r -u root
 Добавил репозиторий Яндекса с графаной
 ```bash
 echo "deb [trusted=yes] http://mirror.yandex.ru/mirrors/packages.grafana.com/oss/deb stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
-
+```
+Обновил кэш пакетов и обновил пакеты
+```bash
+sudo apt update -y
+sudo apt upgrade -y
 ```
 
 
