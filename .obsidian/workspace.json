@@ -8,35 +8,18 @@
         "type": "tabs",
         "children": [
           {
-            "id": "7ba89a935f0eaca9",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Отчет Зарипов Ренат.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Отчет Зарипов Ренат"
-            }
-          },
-          {
             "id": "aad4e3faaa75dcb2",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "image",
               "state": {
-                "file": "Отчет Зарипов Ренат.md",
-                "mode": "source",
-                "source": false
+                "file": "фоточки/Pasted image 20250911200608.png"
               },
-              "icon": "lucide-file",
-              "title": "Отчет Зарипов Ренат"
+              "icon": "lucide-image",
+              "title": "Pasted image 20250911200608"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -109,7 +92,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Отчет Зарипов Ренат.md",
+                "file": "фоточки/Pasted image 20250911200608.png",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -119,7 +102,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Отчет Зарипов Ренат"
+              "title": "Backlinks for Pasted image 20250911200608"
             }
           },
           {
@@ -157,13 +140,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Отчет Зарипов Ренат.md",
+                "file": "фоточки/Pasted image 20250911200608.png",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Отчет Зарипов Ренат"
+              "title": "Outline of Pasted image 20250911200608"
             }
           }
         ],
@@ -186,13 +169,14 @@
   },
   "active": "aad4e3faaa75dcb2",
   "lastOpenFiles": [
+    "README.md",
+    "Отчет Зарипов Ренат.md",
     "task2.yml",
     "task1.yml",
     "inventory.yml",
     "ansible.cfg",
     "фоточки/Pasted image 20250911200608.png",
     "фоточки/Pasted image 20250911201648.png",
-    "Отчет Зарипов Ренат.md",
     "фоточки/Pasted image 20250911200023.png",
     "фоточки/Pasted image 20250911195453.png",
     "фоточки/msedge_l7bfw1wpOx.png",
