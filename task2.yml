@@ -180,12 +180,6 @@
 
  # Работа с сервисом и конфигом графаны
 
-    - name: Удаление старого override Grafana
-      ansible.builtin.file:
-        path: /etc/systemd/system/grafana-server.service.d/override.conf
-        state: absent
-      notify: Reload systemd
-
     - name: Передача владения пакетными каталогами графана юзеру
       ansible.builtin.file:
         path: "{{ item }}"
