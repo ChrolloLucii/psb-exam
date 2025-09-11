@@ -88,7 +88,7 @@ redhat.vscode-yaml
 ansible all -m ping
 ```
 
-![Pasted image 20250911153427.png](фоточки/Pasted image 20250911153427.png)
+![Pasted image 20250911153427.png](<фоточки/Pasted image 20250911153427.png>)
 
 **Приступил к написанию task1.yaml.** 
 
