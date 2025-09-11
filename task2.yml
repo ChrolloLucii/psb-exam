@@ -1,0 +1,307 @@
+---
+- name: Установка стека
+  hosts: monitoring
+  become: true
+  vars:
+    prometheus_user: "prometheususr"
+    grafana_user: "grafanausr"
+    node_exporter_user: "nodeusr"
+    base_dir: "/srv"
+
+    prometheus_port: "9090"
+    grafana_port: "3000"
+    node_exporter_port: "9100"
+
+    grafana_admin: "admin"
+    grafana_password: "admin"
+  tasks:
+    - name: Установка пакетов
+      ansible.builtin.apt:
+        name:
+          - tar
+          - prometheus
+          - grafana
+
+        state: present
+    - name: Остановка стандартных сервисов
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: false
+      loop:
+        - prometheus
+        - grafana-server
+    - name: Создание пользователей
+      ansible.builtin.user:
+        name: "{{ item }}"
+        system: true
+        shell: /bin/false
+        home: "{{ base_dir }}/{{ item }}"
+        createhome: true
+        state: present
+      loop:
+        - "{{ prometheus_user }}"
+        - "{{ grafana_user }}"
+        - "{{ node_exporter_user }}"
+
+    - name: Создание рабочей директорий (Prometheus)
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ prometheus_user }}"
+        group: "{{ prometheus_user }}"
+        mode: '0755'
+      loop:
+        - "{{ base_dir }}/{{ prometheus_user }}"
+        - "{{ base_dir }}/{{ prometheus_user }}/data"
+        - "/etc/prometheus"
+
+    - name: Создание рабочей директорий (Grafana)
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ grafana_user }}"
+        group: "{{ grafana_user }}"
+        mode: '0755'
+      loop:
+        - "{{ base_dir }}/{{ grafana_user }}"
+        - "{{ base_dir }}/{{ grafana_user }}/logs"
+        - "{{ base_dir }}/{{ grafana_user }}/data"
+        - "{{ base_dir }}/{{ grafana_user }}/plugins"
+        - "{{ base_dir }}/{{ grafana_user }}/dashboards"
+
+    - name: Создание рабочей директорий (node)
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ node_exporter_user }}"
+        group: "{{ node_exporter_user }}"
+        mode: '0755'
+      loop:
+        - "{{ base_dir }}/{{ node_exporter_user }}"
+# Установка node-exporter
+
+    - name: Удаление пакетного prometheus-node-exporter
+      ansible.builtin.apt:
+        name: prometheus-node-exporter
+        state: absent
+    - name: Остановка пакетного prometheus-node-exporter
+      ansible.builtin.systemd:
+        name: prometheus-node-exporter
+        state: stopped
+        enabled: false
+
+    - name: Скачивание node-exporter
+      ansible.builtin.get_url:
+        url: "https://github.com/prometheus/node_exporter/releases/download/v1.9.1/node_exporter-1.9.1.linux-amd64.tar.gz"
+        dest: "/tmp"
+        mode: '0644'
+
+
+    - name: Распаковка node-exporter
+      ansible.builtin.unarchive:
+        src: "/tmp/node_exporter-1.9.1.linux-amd64.tar.gz"
+        dest: "/tmp"
+        remote_src: true
+        creates: "/tmp/node_exporter-1.9.1.linux-amd64/node_exporter"
+
+    - name: Копирование бинарников
+      ansible.builtin.copy:
+        src: "/tmp/node_exporter-1.9.1.linux-amd64/node_exporter"
+        dest: "/usr/local/bin/node_exporter"
+        remote_src: true
+        owner: "{{ node_exporter_user }}"
+        group: "{{ node_exporter_user }}"
+        mode: '0755'
+
+
+# Конфигурация прометея
+    - name: Конфиг прометея
+      ansible.builtin.copy:
+        dest: /etc/prometheus/prometheus.yml
+        owner: "{{ prometheus_user }}"
+        group: "{{ prometheus_user }}"
+        mode: '0644'
+        content: |
+          global:
+            scrape_interval: 15s
+          scrape_configs:
+            - job_name: 'node_exporter'
+              static_configs:
+                - targets: ['localhost:{{ node_exporter_port }}']
+      notify: Restart prometheus-custom
+
+# Сервис node-exporter-а
+
+    - name: Создание сервиса node-exporter
+      ansible.builtin.copy:
+        content: |
+          [Unit]
+          Description=Node Exporter
+          After=network.target
+          [Service]
+          User={{ node_exporter_user }}
+          Group={{ node_exporter_user }}
+          Type=simple
+          ExecStart=/usr/local/bin/node_exporter --web.listen-address=:{{ node_exporter_port }}
+          Restart=on-failure
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/node_exporter.service
+        mode: '0644'
+      notify:
+        - Reload systemd
+        - Restart node_exporter
+
+# Работа с сервисом прометея
+
+    - name: Кастомный сервис прометея
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/prometheus-custom.service
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Prometheus Custom
+          After=network.target
+
+          [Service]
+          User={{ prometheus_user }}
+          Group={{ prometheus_user }}
+          ExecStart=/usr/bin/prometheus --config.file=/etc/prometheus/prometheus.yml \
+            --storage.tsdb.path={{ base_dir }}/{{ prometheus_user }}/data \
+            --storage.tsdb.retention.time=15d \
+            --storage.tsdb.retention.size=10GB \
+            --web.listen-address=:{{ prometheus_port }}
+          Restart=on-failure
+          [Install]
+          WantedBy=multi-user.target
+      notify:
+        - Reload systemd
+
+ # Работа с сервисом и конфигом графаны
+
+    - name: Удаление старого override Grafana
+      ansible.builtin.file:
+        path: /etc/systemd/system/grafana-server.service.d/override.conf
+        state: absent
+      notify: Reload systemd
+
+    - name: Передача владения пакетными каталогами графана юзеру
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ grafana_user }}"
+        group: "{{ grafana_user }}"
+        recurse: true
+      loop:
+        - /etc/grafana
+        - /var/lib/grafana
+        - /var/log/grafana
+      notify: Restart grafana
+
+    - name: Конфиг графаны
+      ansible.builtin.copy:
+        dest: /etc/grafana/grafana.ini
+        owner: "{{ grafana_user }}"
+        group: "{{ grafana_user }}"
+        mode: '0644'
+        content: |
+          [paths]
+          data={{ base_dir }}/{{ grafana_user }}/data
+          logs={{ base_dir }}/{{ grafana_user }}/logs
+          plugins={{ base_dir }}/{{ grafana_user }}/plugins
+          provisioning=/etc/grafana/provisioning
+          [server]
+          http_port={{ grafana_port }}
+
+          [security]
+          admin_password={{ grafana_password }}
+          admin_user={{ grafana_admin }}
+
+    - name: Создание Директории Override
+      ansible.builtin.file:
+        path: /etc/systemd/system/grafana-server.service.d
+        state: directory
+        mode: '0755'
+
+    - name: Override для сервиса графаны
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/grafana-server.service.d/override.conf
+        mode: '0644'
+        content: |
+          [Service]
+          User={{ grafana_user }}
+          Group={{ grafana_user }}
+          WorkingDirectory=/usr/share/grafana
+      notify:
+        - Reload systemd
+        - Restart grafana
+
+
+    - name: Источник данных = прометей
+      ansible.builtin.copy:
+        dest: "/etc/grafana/provisioning/datasources/prometheus.yaml"
+        mode: '0644'
+        owner: "{{ grafana_user }}"
+        group: "{{ grafana_user }}"
+        content: |
+          apiVersion: 1
+          datasources:
+            - name: Prometheus
+              type: prometheus
+              url: http://localhost:{{ prometheus_port }}
+              access: proxy
+              editable: false
+              isDefault: true
+
+    - name: Скачивание дэшборды node-exportера
+      ansible.builtin.get_url:
+        url: https://grafana.com/api/dashboards/1860/revisions/41/download
+        dest: "{{ base_dir }}/{{ grafana_user }}/dashboards/node-exporter.json"
+        owner: "{{ grafana_user }}"
+        group: "{{ grafana_user }}"
+        mode: '0644'
+
+    - name: Добавление дэшборда
+      ansible.builtin.copy:
+        dest: "/etc/grafana/provisioning/dashboards/dashboards.yaml"
+        owner: "{{ grafana_user }}"
+        group: "{{ grafana_user }}"
+        mode: '0644'
+        content: |
+          apiVersion: 1
+
+          providers:
+            - name: Node Exporter
+              type: file
+              options:
+                path: {{ base_dir }}/{{ grafana_user }}/dashboards
+      notify: Restart grafana
+
+    - name: Запуск всех сервисов
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+        daemon_reload: true
+      loop:
+        - node_exporter
+        - prometheus-custom
+        - grafana-server
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+    - name: Restart node_exporter
+      ansible.builtin.systemd:
+        name: node_exporter
+        state: restarted
+    - name: Restart grafana
+      ansible.builtin.systemd:
+        name: grafana-server
+        state: restarted
+    - name: Restart prometheus-custom
+      ansible.builtin.systemd:
+        name: prometheus-custom
+        state: restarted

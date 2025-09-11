@@ -1,0 +1,211 @@
+{
+  "main": {
+    "id": "2be6fd0f899d2a94",
+    "type": "split",
+    "children": [
+      {
+        "id": "6e6c7b7efc6660cf",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7ba89a935f0eaca9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Отчет Зарипов Ренат.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Отчет Зарипов Ренат"
+            }
+          },
+          {
+            "id": "aad4e3faaa75dcb2",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Отчет Зарипов Ренат.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Отчет Зарипов Ренат"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "b82dc8e0e6fe3516",
+    "type": "split",
+    "children": [
+      {
+        "id": "b7f22c9964de92a7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bd03870194c14c9a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "6194342bb25050cd",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "7c3d6c5364dad67c",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 318.5004348754883
+  },
+  "right": {
+    "id": "016e01ecad594a39",
+    "type": "split",
+    "children": [
+      {
+        "id": "8058286f2b2b5b45",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b415a9b3be519f9f",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Отчет Зарипов Ренат.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": true,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Отчет Зарипов Ренат"
+            }
+          },
+          {
+            "id": "dab4d9bd9bd67965",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Отчет Зарипов Ренат.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Отчет Зарипов Ренат"
+            }
+          },
+          {
+            "id": "92c73b886f52cb65",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "801f27c7fda69bf6",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Отчет Зарипов Ренат.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Отчет Зарипов Ренат"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "aad4e3faaa75dcb2",
+  "lastOpenFiles": [
+    "task2.yml",
+    "task1.yml",
+    "inventory.yml",
+    "ansible.cfg",
+    "фоточки/Pasted image 20250911200608.png",
+    "фоточки/Pasted image 20250911201648.png",
+    "Отчет Зарипов Ренат.md",
+    "фоточки/Pasted image 20250911200023.png",
+    "фоточки/Pasted image 20250911195453.png",
+    "фоточки/msedge_l7bfw1wpOx.png",
+    "фоточки",
+    "фоточки/Pasted image 20250911194733.png",
+    "фоточки/Pasted image 20250911194325.png",
+    "фоточки/Pasted image 20250911193636.png",
+    "фоточки/Pasted image 20250911192959.png",
+    "фоточки/Pasted image 20250911192235.png",
+    "ansible.cfg.md",
+    "report.md",
+    "Отчет Зарипов Ренатt.md",
+    "[ansible.builtin.ssh.md",
+    "().md"
+  ]
+}

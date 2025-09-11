@@ -1,0 +1,70 @@
+---
+- name: Базовая настройка
+  hosts: monitoring
+  become: true
+
+  tasks:
+    - name: Установка имя хоста
+      ansible.builtin.hostname:
+        name: monitoring-server.local
+      register: hostname_result
+
+    - name: Обновление /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "127.0.0.1 monitoring-server.local"
+        state: present
+        backup: true
+
+    - name: Установка времени
+      community.general.timezone:
+        name: Europe/Moscow
+      register: timezone_result
+
+    - name: Обновление кэша пакетов
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      register: update_result
+
+    - name: Проверка хостнейма
+      ansible.builtin.command: hostname
+      register: current_hostname
+      changed_when: false
+
+    - name: Проверка хостнейма в /etc/hostname
+      ansible.builtin.command: cat /etc/hostname
+      register: hostname_file
+      changed_when: false
+
+    - name: Проверка времени / даты
+      ansible.builtin.command: date
+      register: current_datetime
+      changed_when: false
+
+    - name: Проверка таймзоны
+      ansible.builtin.command: timedatectl show --property=Timezone --value
+      register: current_timezone
+      changed_when: false
+
+    - name: Статус времени
+      ansible.builtin.command: timedatectl status
+      register: time_status
+      changed_when: false
+  # вывод результатов
+    - name: Вывод хостнеймов
+      ansible.builtin.debug:
+        msg:
+          - "вывод hostname : {{ current_hostname.stdout }}"
+          - "файл /etc/hostname: {{ hostname_file.stdout }}"
+          - "Результат изменения: {{ hostname_result.changed }}"
+    - name: Вывод времени
+      ansible.builtin.debug:
+        msg:
+          - "текущая дата и время : {{ current_datetime.stdout }}"
+          - "таймзона : {{ current_timezone.stdout }}"
+          - "результат изменения : {{ timezone_result.changed }}"
+    - name: Вывод о пакетах
+      ansible.builtin.debug:
+        msg:
+          - "Кэш пакетов обновлен : {{ update_result }}"
